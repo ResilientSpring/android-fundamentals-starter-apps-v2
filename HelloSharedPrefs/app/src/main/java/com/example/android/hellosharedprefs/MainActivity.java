@@ -15,6 +15,7 @@
  */
 package com.example.android.hellosharedprefs;
 
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -45,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
     // Key for current color
     private final String COLOR_KEY = "color";
 
+    private SharedPreferences myPreferences;
+    private String sharedPreferenceFile = "com.example.android.hellosharedprefs";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +57,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize views, color
         mShowCountTextView = findViewById(R.id.count_textview);
-        mColor = ContextCompat.getColor(this,
-                R.color.default_background);
+        mColor = ContextCompat.getColor(this, R.color.default_background);
+
+        myPreferences = getSharedPreferences(sharedPreferenceFile, MODE_PRIVATE);
 
         // Restore the saved instance state.
         if (savedInstanceState != null) {
@@ -66,7 +71,31 @@ public class MainActivity extends AppCompatActivity {
 
             mColor = savedInstanceState.getInt(COLOR_KEY);
             mShowCountTextView.setBackgroundColor(mColor);
+        } else {
+
+            mCount = myPreferences.getInt(COUNT_KEY, 0);
+
+            mShowCountTextView.setText(String.format("%s", mCount));
+
+            mColor = myPreferences.getInt(COLOR_KEY, mColor);
+
+            mShowCountTextView.setBackgroundColor(mColor);
+
         }
+
+    }
+
+    @Override
+    protected void onPause() {
+
+        SharedPreferences.Editor preferencesEditor = myPreferences.edit();
+
+        super.onPause();
+
+        preferencesEditor.putInt(COUNT_KEY, mCount);
+        preferencesEditor.putInt(COLOR_KEY, mColor);
+
+        preferencesEditor.apply();
     }
 
     /**
