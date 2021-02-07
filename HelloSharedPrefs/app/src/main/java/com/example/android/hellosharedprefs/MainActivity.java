@@ -150,8 +150,12 @@ public class MainActivity extends AppCompatActivity {
         mShowCountTextView.setText(String.format("%s", mCount));
 
         // Reset color
-        mColor = ContextCompat.getColor(this,
-                R.color.default_background);
+        mColor = ContextCompat.getColor(this, R.color.default_background);
         mShowCountTextView.setBackgroundColor(mColor);
+
+        // Reset preferences
+        SharedPreferences.Editor preferenceEditor = myPreferences.edit();
+        preferenceEditor.clear();
+        preferenceEditor.apply();
     }
 }
